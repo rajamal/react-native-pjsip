@@ -2,7 +2,8 @@ package com.carusto.ReactNativePjSip;
 
 import android.app.Activity;
 import android.content.Intent;
-
+import android.content.Context;
+import android.os.Build;
 import com.facebook.react.bridge.*;
 
 public class PjSipModule extends ReactContextBaseJavaModule {
@@ -14,8 +15,11 @@ public class PjSipModule extends ReactContextBaseJavaModule {
 
         // Module could be started several times, but we have to register receiver only once.
         if (receiver == null) {
-            receiver = new PjSipBroadcastReceiver(context);
-            this.getReactApplicationContext().registerReceiver(receiver, receiver.getFilter());
+            if(Build.VERSION.SDK_INT >= 34){
+                this.getReactApplicationContext().registerReceiver(receiver, receiver.getFilter(), Context.RECEIVER_EXPORTED);
+            } else {
+                this.getReactApplicationContext().registerReceiver(receiver, receiver.getFilter());
+            }
         } else {
             receiver.setContext(context);
         }
